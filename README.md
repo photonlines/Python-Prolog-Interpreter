@@ -4,7 +4,7 @@ This is a mini-Prolog Interpreter written in a few lines of Python 3. It runs a 
 
 In addition to the interpreter, there’s also an interface for testing the functionality which allows a user to enter Prolog rules and perform queries for the solutions: 
 
-![](images/prolog-editor-snip.png?raw=true)
+![](images/Prolog-Editor-Snip.PNG?raw=true)
 
 ### Prolog
 
@@ -68,11 +68,11 @@ Of course, Prolog assumes that anything NOT contained within its database of fac
 
 ```prolog
 ?- rainy.
-No
+No.
 ?- wonderful.
-No
+No.
 ?- bright.
-No
+No.
 ```
 
 We can also use Variables to query for items which satisfy our rules. Let’s say that we know that Fred eats oranges, so we define:
