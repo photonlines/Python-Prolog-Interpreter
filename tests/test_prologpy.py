@@ -1,4 +1,4 @@
-from prologpy.solver import Solver
+from prologpy import Solver
 
 
 def test_simple_goal_query():
