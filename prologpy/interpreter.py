@@ -4,7 +4,7 @@ from functools import reduce
 class Term(object):
     """Prolog has only one data type — the term.
 
-    he simplest term is an atom. Atoms can be combined to form compound terms.
+    The simplest term is an atom. Atoms can be combined to form compound terms.
     Example: are_friends(mark, michael) is a compound term where are_friends is
     called a functor and mark and michael are arguments.
     """
@@ -161,11 +161,14 @@ class Rule(object):
 
 class Conjunction(Term):
     """# A conjunction is a logical operator that connects two terms. A conjunction
-    between # the two terms will result in the expression evaluating to true only if
-    both terms # evaluate to true. As an example, we could state that a teacher
-    teaches another # student if the student lectures a course and the student
-    studies the course using # the rule below: teaches(Teacher, Student) :- lectures(
-    Teacher, Course), studies( # Student, Course). """
+    between the two terms will result in the expression evaluating to true only if
+    both terms evaluate to true. As an example, we could state that a teacher
+    teaches another student if the student lectures a course and the student
+    studies the course using the rule below:
+
+    teaches(Teacher, Student) :- lectures(Teacher, Course), studies(Student, Course).
+
+    """
 
     def __init__(self, arguments):
         super().__init__("", arguments)
