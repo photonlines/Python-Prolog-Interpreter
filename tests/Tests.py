@@ -3,7 +3,6 @@ from prologpy.Solver import Solver
 
 # Integration tests which test some of the higher level functionality of our implementation
 class PrologTestCases(unittest.TestCase):
-
     def test_simple_goal_query(self):
 
         rules_text = """
@@ -21,9 +20,9 @@ class PrologTestCases(unittest.TestCase):
         """
 
         solver = Solver(rules_text)
-        solution = solver.find_solutions( goal_text )
+        solution = solver.find_solutions(goal_text)
 
-        self.assertTrue( solution )
+        self.assertTrue(solution)
 
     def test_simple_goal_query2(self):
         rules_text = """
@@ -64,9 +63,9 @@ class PrologTestCases(unittest.TestCase):
         solver = Solver(rules_text)
         solutions = solver.find_solutions(query_text)
 
-        self.assertTrue( len(solutions.get("X")) == 1)
+        self.assertTrue(len(solutions.get("X")) == 1)
 
-        self.assertEqual( str(solutions.get("X").pop()), "eric")
+        self.assertEqual(str(solutions.get("X").pop()), "eric")
 
     def test_multi_variable_solutions(self):
 
@@ -90,8 +89,12 @@ class PrologTestCases(unittest.TestCase):
 
         self.assertTrue(len(solutions.get("Y")) == 2)
 
-        self.assertTrue("jack" in str(solution) for solution in solutions.get("Y"))
-        self.assertTrue("johnny" in str(solution) for solution in solutions.get("Y"))
+        self.assertTrue(
+            "jack" in str(solution) for solution in solutions.get("Y")
+        )
+        self.assertTrue(
+            "johnny" in str(solution) for solution in solutions.get("Y")
+        )
 
     def test_find_bad_dog(self):
 
@@ -119,7 +122,9 @@ class PrologTestCases(unittest.TestCase):
 
         self.assertTrue(len(solutions.get("X")) == 1)
 
-        self.assertTrue("fido" in str(solution) for solution in solutions.get("X"))
+        self.assertTrue(
+            "fido" in str(solution) for solution in solutions.get("X")
+        )
 
     def test_rule_sub(self):
 
@@ -146,10 +151,18 @@ class PrologTestCases(unittest.TestCase):
 
         self.assertTrue(len(solutions.get("X")) == 4)
 
-        self.assertTrue("ishmael" in str(solution) for solution in solutions.get("X"))
-        self.assertTrue("isaac" in str(solution) for solution in solutions.get("X"))
-        self.assertTrue("esau" in str(solution) for solution in solutions.get("X"))
-        self.assertTrue("jacob" in str(solution) for solution in solutions.get("X"))
+        self.assertTrue(
+            "ishmael" in str(solution) for solution in solutions.get("X")
+        )
+        self.assertTrue(
+            "isaac" in str(solution) for solution in solutions.get("X")
+        )
+        self.assertTrue(
+            "esau" in str(solution) for solution in solutions.get("X")
+        )
+        self.assertTrue(
+            "jacob" in str(solution) for solution in solutions.get("X")
+        )
 
     def test_rule_sub2(self):
 
@@ -181,9 +194,15 @@ class PrologTestCases(unittest.TestCase):
 
         self.assertTrue(len(solutions.get("X")) == 3)
 
-        self.assertTrue("chloe" in str(solution) for solution in solutions.get("X"))
-        self.assertTrue("kristen" in str(solution) for solution in solutions.get("X"))
-        self.assertTrue("alexandria" in str(solution) for solution in solutions.get("X"))
+        self.assertTrue(
+            "chloe" in str(solution) for solution in solutions.get("X")
+        )
+        self.assertTrue(
+            "kristen" in str(solution) for solution in solutions.get("X")
+        )
+        self.assertTrue(
+            "alexandria" in str(solution) for solution in solutions.get("X")
+        )
 
     def test_multiple_var_query(self):
 
@@ -222,14 +241,30 @@ class PrologTestCases(unittest.TestCase):
 
         self.assertTrue(len(solutions) == 8)
 
-        self.assertTrue('(jack, peter)' in str(solution) for solution in solutions)
-        self.assertTrue('(jack, mary)' in str(solution) for solution in solutions)
-        self.assertTrue('(david, peter)' in str(solution) for solution in solutions)
-        self.assertTrue('(david, mary)' in str(solution) for solution in solutions)
-        self.assertTrue('(karen, peter)' in str(solution) for solution in solutions)
-        self.assertTrue('(karen, mary)' in str(solution) for solution in solutions)
-        self.assertTrue('(amy, peter)' in str(solution) for solution in solutions)
-        self.assertTrue('(amy, peter)' in str(solution) for solution in solutions)
+        self.assertTrue(
+            "(jack, peter)" in str(solution) for solution in solutions
+        )
+        self.assertTrue(
+            "(jack, mary)" in str(solution) for solution in solutions
+        )
+        self.assertTrue(
+            "(david, peter)" in str(solution) for solution in solutions
+        )
+        self.assertTrue(
+            "(david, mary)" in str(solution) for solution in solutions
+        )
+        self.assertTrue(
+            "(karen, peter)" in str(solution) for solution in solutions
+        )
+        self.assertTrue(
+            "(karen, mary)" in str(solution) for solution in solutions
+        )
+        self.assertTrue(
+            "(amy, peter)" in str(solution) for solution in solutions
+        )
+        self.assertTrue(
+            "(amy, peter)" in str(solution) for solution in solutions
+        )
 
     def test_einstein_puzzle(self):
 
@@ -294,8 +329,14 @@ class PrologTestCases(unittest.TestCase):
         solver = Solver(rules_text)
         solutions = solver.find_solutions(query_text)
 
-        self.assertTrue("norwegian" in str(solution) for solution in solutions.get("WaterDrinker"))
-        self.assertTrue("japanese" in str(solution) for solution in solutions.get("ZebraOwner"))
+        self.assertTrue(
+            "norwegian" in str(solution)
+            for solution in solutions.get("WaterDrinker")
+        )
+        self.assertTrue(
+            "japanese" in str(solution)
+            for solution in solutions.get("ZebraOwner")
+        )
 
     def test_alternate_einstein_puzzle(self):
 
@@ -359,8 +400,12 @@ class PrologTestCases(unittest.TestCase):
 
         self.assertTrue(len(solutions.get("FishOwner")) == 1)
 
-        self.assertTrue("german" in str(solution) for solution in solutions.get("FishOwner"))
+        self.assertTrue(
+            "german" in str(solution)
+            for solution in solutions.get("FishOwner")
+        )
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
 
     unittest.main()
