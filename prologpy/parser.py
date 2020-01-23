@@ -46,26 +46,26 @@ class Parser(object):
     """
 
     def __init__(self, input_text):
-        self.tokens = parse_tokens_from_string(input_text)
-        self.scope = None
+        self._tokens = parse_tokens_from_string(input_text)
+        self._scope = None
 
     def parse_rules(self):
         rules = []
-        while self.tokens:
-            self.scope = {}
+        while self._tokens:
+            self._scope = {}
             rules.append(self._parse_rule())
         return rules
 
     def parse_query(self):
-        self.scope = {}
+        self._scope = {}
         return self._parse_term()
 
     @property
     def _current(self):
-        return self.tokens[0]
+        return self._tokens[0]
 
     def _pop_current(self):
-        return self.tokens.pop(0)
+        return self._tokens.pop(0)
 
     def _parse_atom(self):
         name = self._pop_current()
@@ -74,7 +74,6 @@ class Parser(object):
         return name
 
     def _parse_term(self):
-
         # If we encounter an opening parenthesis, we know we're dealing with a
         # conjunction, so we process the list of arguments until we hit a closing
         # parenthesis and return the conjunction object.
@@ -93,11 +92,11 @@ class Parser(object):
             if functor == "_":
                 return Variable("_")
 
-            variable = self.scope.get(functor)
+            variable = self._scope.get(functor)
 
             if variable is None:
-                self.scope[functor] = Variable(functor)
-                variable = self.scope[functor]
+                self._scope[functor] = Variable(functor)
+                variable = self._scope[functor]
 
             return variable
 
@@ -110,9 +109,7 @@ class Parser(object):
         return Term(functor, arguments)
 
     def _parse_arguments(self):
-
         arguments = []
-
         # Keep adding the arguments to our list until we encounter an ending
         # parenthesis ')'
         while self._current != ")":
@@ -123,7 +120,6 @@ class Parser(object):
                 )
             if self._current == ",":
                 self._pop_current()
-
         self._pop_current()
         return arguments
 
