@@ -1,6 +1,6 @@
 from tkinter import Tk, Text, Menu, filedialog, Label, Button, END, W, E, FALSE
 from tkinter.scrolledtext import ScrolledText
-from src.Solver import Solver
+from prologpy.Solver import Solver
 
 class Editor():
 

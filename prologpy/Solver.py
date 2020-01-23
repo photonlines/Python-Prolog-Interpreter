@@ -1,5 +1,5 @@
-from src.Interpreter import Database, Variable
-from src.Parser import Parser
+from prologpy.Interpreter import Database, Variable
+from prologpy.Parser import Parser
 from collections import defaultdict
 
 class Solver:

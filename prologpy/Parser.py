@@ -1,5 +1,5 @@
 import re
-from src.Interpreter import Conjunction, Variable, Term, TRUE, Rule
+from prologpy.Interpreter import Conjunction, Variable, Term, TRUE, Rule
 
 # The following class implements a parser we use to parse our Prolog programs / queries.
 class Parser:
