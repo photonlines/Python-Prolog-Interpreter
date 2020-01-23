@@ -41,75 +41,49 @@ def parse_tokens_from_string(input_text):
 
 
 class Parser(object):
+    """
+    NOTE: Instance can only be used once!
+    """
+
     def __init__(self, input_text):
-
         self.tokens = parse_tokens_from_string(input_text)
-        self.token_iterator = iter(self.tokens)
-
-        self.current = None
-        self.finished = False
         self.scope = None
-
-        self.parse_next()
 
     def parse_rules(self):
         rules = []
-
-        while not self.finished:
+        while self.tokens:
             self.scope = {}
-            rules.append(self.parse_rule())
-
+            rules.append(self._parse_rule())
         return rules
 
     def parse_query(self):
         self.scope = {}
-        return self.parse_term()
+        return self._parse_term()
 
-    def parse_next(self):
-        try:
-            self.current = next(self.token_iterator)
-            # If there are no more tokens to iterate over, we mark the parser as
-            # being finished
-            self.finished = self.token_iterator.__length_hint__() <= 0
-        except StopIteration:
-            self.finished = True
+    @property
+    def _current(self):
+        return self.tokens[0]
 
-    def parse_atom(self):
-        name = self.current
+    def _pop_current(self):
+        return self.tokens.pop(0)
 
+    def _parse_atom(self):
+        name = self._pop_current()
         if re.match(ATOM_NAME_REGEX, name) is None:
             raise Exception("Invalid Atom Name: " + str(name))
-
-        self.parse_next()
-
         return name
 
-    def parse_term(self):
+    def _parse_term(self):
 
         # If we encounter an opening parenthesis, we know we're dealing with a
         # conjunction, so we process the list of arguments until we hit a closing
         # parenthesis and return the conjunction object.
-        if self.current == "(":
-
-            self.parse_next()
-            arguments = []
-
-            while self.current != ")":
-                arguments.append(self.parse_term())
-
-                if self.current not in (",", ")"):
-                    raise Exception(
-                        "Expected , or ) in term but got " + str(self.current)
-                    )
-
-                if self.current == ",":
-                    self.parse_next()
-
-            self.parse_next()
-
+        if self._current == "(":
+            self._pop_current()
+            arguments = self._parse_arguments()
             return Conjunction(arguments)
 
-        functor = self.parse_atom()
+        functor = self._parse_atom()
 
         # If we have a matching variable, we make sure that variables with the same
         # name within a rule always use one variable object (with the exception of
@@ -129,58 +103,61 @@ class Parser(object):
 
         # If there are no arguments to process, return an atom. Atoms are processed
         # as terms without arguments.
-        if self.current != "(":
+        if self._current != "(":
             return Term(functor)
+        self._pop_current()
+        arguments = self._parse_arguments()
+        return Term(functor, arguments)
 
-        self.parse_next()
+    def _parse_arguments(self):
 
-        # We now process our term arguments:
         arguments = []
 
         # Keep adding the arguments to our list until we encounter an ending
         # parenthesis ')'
-        while self.current != ")":
-            arguments.append(self.parse_term())
-            if self.current not in (",", ")"):
+        while self._current != ")":
+            arguments.append(self._parse_term())
+            if self._current not in (",", ")"):
                 raise Exception(
-                    "Expected , or ) in term but got " + str(self.current)
+                    "Expected , or ) in term but got " + str(self._current)
                 )
-            if self.current == ",":
-                self.parse_next()
+            if self._current == ",":
+                self._pop_current()
 
-        self.parse_next()
+        self._pop_current()
+        return arguments
 
-        return Term(functor, arguments)
+    def _parse_rule(self):
 
-    def parse_rule(self):
+        head = self._parse_term()
 
-        head = self.parse_term()
-
-        if self.current == ".":
-            self.parse_next()
+        if self._current == ".":
+            self._pop_current()
             # We process facts as rules with the tail set to true:
             return Rule(head, TRUE())
 
-        if self.current != ":-":
-            raise Exception("Expected :- in rule but got " + str(self.current))
+        if self._current != ":-":
+            raise Exception(
+                "Expected :- in rule but got " + str(self._current)
+            )
 
-        self.parse_next()
+        self._pop_current()
 
         # Process the rule arguments
         arguments = []
 
-        while self.current != ".":
-            arguments.append(self.parse_term())
+        while self._current != ".":
+            arguments.append(self._parse_term())
 
-            if self.current not in (",", "."):
+            if self._current not in (",", "."):
                 raise Exception(
-                    "Expected , or . in term but got " + str(self.current)
+                    "Expected , or . in term but got " + str(self._current)
                 )
 
-            if self.current == ",":
-                self.parse_next()
+            if self._current == ",":
+                self._pop_current()
 
-        self.parse_next()
+        self._pop_current()
 
         # If we have more than one argument, we return a conjunction, otherwise,
         # we process the item as a regular rule containing a head and a tail
