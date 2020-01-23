@@ -1,8 +1,11 @@
 import unittest
 from prologpy.Solver import Solver
 
-# Integration tests which test some of the higher level functionality of our implementation
+
 class PrologTestCases(unittest.TestCase):
+    """Integration tests which test some of the higher level functionality of our
+    implementation """
+
     def test_simple_goal_query(self):
 
         rules_text = """

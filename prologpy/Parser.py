@@ -1,10 +1,9 @@
 import re
 from prologpy.Interpreter import Conjunction, Variable, Term, TRUE, Rule
 
-# The following class implements a parser we use to parse our Prolog programs / queries.
 
+class Parser(object):
 
-class Parser:
     def __init__(self, input_text):
 
         self.token_regex = "[A-Za-z0-9_]+|:\-|[()\.,]"
@@ -27,8 +26,8 @@ class Parser:
 
         self.parse_next()
 
-    # Return the input text string with all of the comments removed from it
     def remove_comments(self, input_text):
+        """Return the input text string with all of the comments removed from it"""
 
         # Create a regular expression Pattern object we can use to find and strip out
         # comments. The MULTILINE flag tells Python to treat each line in the string
@@ -38,7 +37,7 @@ class Parser:
         regex = re.compile(self.comment_regex, re.MULTILINE | re.DOTALL)
 
         def remove_comment(match):
-            # If we found a match for our 2nd group, it is a comment, so we remove it
+            """If we found a match for our 2nd group, it is a comment, so we remove"""
             if match.group(2) is not None:
                 return ""
             # Otherwise, we found a quoted string containing a comment, so we leave
@@ -48,8 +47,8 @@ class Parser:
 
         return regex.sub(remove_comment, input_text)
 
-    # Convert the input text into a list of tokens we can iterate over / process
     def get_token_list(self, input_text):
+        """Convert the input text into a list of tokens we can iterate over / process"""
         iterator = re.finditer(
             self.token_regex, self.remove_comments(input_text)
         )

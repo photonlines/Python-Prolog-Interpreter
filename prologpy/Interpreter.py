@@ -1,16 +1,20 @@
 from functools import reduce
 
-# Prolog has only one data type — the term. The simplest term is an atom. Atoms can
-# be combined to form compound terms. Example: are_friends(mark, michael) is a
-# compound term where are_friends is called a functor and mark and michael are
-# arguments.
-class Term:
+
+class Term(object):
+    """Prolog has only one data type — the term.
+
+    he simplest term is an atom. Atoms can be combined to form compound terms.
+    Example: are_friends(mark, michael) is a compound term where are_friends is
+    called a functor and mark and michael are arguments.
+    """
+
     def __init__(self, functor, arguments=[]):
         self.functor = functor
         self.arguments = arguments
 
-    # Returns a map of matching variable bindings
     def match_variable_bindings(self, other_term):
+        """Return a map of matching variable bindings"""
 
         # If the passed in term is a variable, we bind the variable to our current
         # term and return the result.
@@ -50,10 +54,11 @@ class Term:
                 Database.merge_bindings, [{}] + matched_argument_var_bindings
             )
 
-    # Take the variable bindings map and return a term with all occurrences of the
-    # term variables replaced with the corresponding variable values from our
-    # variable bindings map.
     def substitute_variable_bindings(self, variable_bindings):
+        """Take the variable bindings map and return a term with all occurrences of
+        the term variables replaced with the corresponding variable values from our
+        variable bindings map.
+        """
         return Term(
             self.functor,
             [
@@ -62,12 +67,10 @@ class Term:
             ],
         )
 
-    # Query the database for terms matching this one
     def query(self, database):
+        """Query the database for terms matching this one"""
         yield from database.query(self)
 
-    # Return a readable representation of our term containing our functor and
-    # argument info.
     def __str__(self):
         return (
             str(self.functor)
@@ -78,34 +81,35 @@ class Term:
             + " ) "
         )
 
-    # Use the default string representation
     def __repr__(self):
         return str(self)
 
 
-# A predefined term used to represent facts as rules. i.e. functor(argument1,
-# argument2) for example gets translated to functor(argument1, argument2) :- TRUE
 class TRUE(Term):
+    """A predefined term used to represent facts as rules. i.e. functor(argument1,
+    argument2) for example gets translated to functor(argument1, argument2) :- TRUE """
+
     def __init__(self, functor="TRUE", arguments=[]):
         super().__init__(functor, arguments)
 
-    # Simply return our truth term since there is nothing to bind
     def substitute_variable_bindings(self, variable_bindings):
+        # Simply return our truth term since there is nothing to bind
         return self
 
     def query(self, database):
         yield self
 
 
-# A variable is a type of term. Variables start with an uppercase letter and
-# represent placeholders for actual terms.
-class Variable:
+class Variable(object):
+    """A variable is a type of term. Variables start with an uppercase letter and
+    represent placeholders for actual terms. """
+
     def __init__(self, name):
         self.name = name
 
-    # If the passed in term doesn't represent the same variable, we bind our current
-    # variable to the outer term and return the mapped binding.
     def match_variable_bindings(self, other_term):
+        """ If the passed in term doesn't represent the same variable, we bind our
+        current variable to the outer term and return the mapped binding. """
         bindings = {}
 
         if self != other_term:
@@ -113,10 +117,10 @@ class Variable:
 
         return bindings
 
-    # Fetch the currently bound variable value for our variable and return the
-    # substituted bindings if our variable is mapped. If our variable isn't mapped,
-    # we simply return the variable as the substitute.
     def substitute_variable_bindings(self, variable_bindings):
+        """Fetch the currently bound variable value for our variable and return the
+        substituted bindings if our variable is mapped. If our variable isn't mapped,
+        we simply return the variable as the substitute. """
         bound_variable_value = variable_bindings.get(self)
 
         if bound_variable_value:
@@ -126,51 +130,49 @@ class Variable:
 
         return self
 
-    # Return a readable representation of our variable containing the variable name.
     def __str__(self):
         return str(self.name)
 
-    # Use the default string representation.
     def __repr__(self):
         return str(self)
 
 
-# Rules are used to define relationships between facts and other rules.They allow us
-# to make conditional statements about our world. Let's say we want to say that all
-# humans are mortal. We can do so using the rule below: mortal(X) :- human(X)
-class Rule:
+class Rule(object):
+    """Rules are used to define relationships between facts and other rules.They
+    allow us to make conditional statements about our world. Let's say we want to say
+    that all humans are mortal. We can do so using the rule below: mortal(X) :-
+    human(X) """
+
     def __init__(self, head, tail):
         self.head = head
         self.tail = tail
 
-    # Return a readable representation of our rule containing our rule head and tail
-    # info.
     def __str__(self):
         return str(self.head) + " :- " + str(self.tail)
 
-    # Use the default string representation
     def __repr__(self):
         return str(self)
 
 
-# A conjunction is a logical operator that connects two terms. A conjunction between
-# the two terms will result in the expression evaluating to true only if both terms
-# evaluate to true. As an example, we could state that a teacher teaches another
-# student if the student lectures a course and the student studies the course using
-# the rule below: teaches(Teacher, Student) :- lectures(Teacher, Course), studies(
-# Student, Course).
 class Conjunction(Term):
+    """# A conjunction is a logical operator that connects two terms. A conjunction
+    between # the two terms will result in the expression evaluating to true only if
+    both terms # evaluate to true. As an example, we could state that a teacher
+    teaches another # student if the student lectures a course and the student
+    studies the course using # the rule below: teaches(Teacher, Student) :- lectures(
+    Teacher, Course), studies( # Student, Course). """
+
     def __init__(self, arguments):
         self.functor = ""
         self.arguments = arguments
 
-    # Return a generator that iterates over all of the conjunction terms which match
-    # the database rules.
     def query(self, database):
+        """Return a generator that iterates over all of the conjunction terms which
+        match the database rules. """
 
-        # Return a generator which iterates over all of the database solutions
-        # matching our rules
         def find_solutions(self, database, argument_index, variable_bindings):
+            """Return a generator which iterates over all of the database solutions
+            matching our rules """
 
             # If there are no more arguments to match, we return the substituted
             # variable bindings for our entire conjunction
@@ -208,11 +210,13 @@ class Conjunction(Term):
         # recursively process all of the items matching our rules.
         yield from find_solutions(self, database, 0, {})
 
-    # Take the variable bindings map and return a conjunction with all occurrences of
-    # the variables present in our current conjunction terms replaced with a list of
-    # terms containing the substituted variable bindings from our variable bindings
-    # map.
     def substitute_variable_bindings(self, variable_bindings):
+        """ Take the variable bindings map and return a conjunction with all
+        occurrences of the variables present in our current conjunction terms
+        replaced with a list of terms containing the substituted variable bindings
+        from our variable bindings map.
+
+        """
         return Conjunction(
             [
                 argument.substitute_variable_bindings(variable_bindings)
@@ -220,25 +224,29 @@ class Conjunction(Term):
             ]
         )
 
-    # Return a readable representation of our conjunction containing a list of its
-    # arguments / terms.
     def __str__(self):
         return ", ".join(str(argument) for argument in self.arguments)
 
-    # Use the default string representation
     def __repr__(self):
         return str(self)
 
 
-# The database object is an object which contains a list of our declared rules. It's
-# used to query our data for items matching a goal. It also contains the helper
-# function used to merge variable bindings.
-class Database:
+class Database(object):
+    """The database object is an object which contains a list of our declared rules.
+
+    It's used to query our data for items matching a goal. It also contains the
+    helper function used to merge variable bindings.
+
+    """
+
     def __init__(self, rules):
         self.rules = rules
 
-    # Return a generator that iterates over all of the terms matching the given goal.
     def query(self, goal):
+        """Return a generator that iterates over all of the terms matching the given
+        goal.
+
+        """
 
         for index, rule in enumerate(self.rules):
 
@@ -273,12 +281,12 @@ class Database:
                         matching_tail_var_bindings
                     )
 
-    # This function takes two variable binding maps and returns a combined bindings
-    # map if there are no conflicts. If any of the bound variables are present in
-    # both bindings maps but the terms they are bound to do not match, merge_bindings
-    # returns None.
     @staticmethod
     def merge_bindings(first_bindings_map, second_bindings_map):
+        """Takes two variable binding maps and returns a combined bindings map if
+        there are no conflicts. If any of the bound variables are present in both
+        bindings maps but the terms they are bound to do not match, merge_bindings
+        returns None. """
 
         if first_bindings_map is None or second_bindings_map is None:
             return None
@@ -318,10 +326,8 @@ class Database:
 
         return merged_bindings
 
-    # Return a readable representation of our database containing a list of our rules.
     def __str__(self):
         return ".\n".join(str(rule) for rule in self.rules)
 
-    # Use the default string representation
     def __repr__(self):
         return str(self)
