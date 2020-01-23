@@ -3,8 +3,20 @@ from tkinter.scrolledtext import ScrolledText
 from prologpy.solver import Solver
 
 
-class Editor(object):
+def is_file_path_selected(file_path):
+    return file_path is not None and file_path != ""
 
+
+def get_file_contents(file_path):
+    """Return a string containing the file contents of the file located at the
+    specified file path """
+    with open(file_path, encoding="utf-8") as f:
+        file_contents = f.read()
+
+    return file_contents
+
+
+class Editor(object):
     def __init__(self, root_):
 
         self.root = root_
@@ -140,15 +152,15 @@ class Editor(object):
         # Create a new solver so we can try to query for solutions.
         try:
             solver = Solver(rules_text)
-        except Exception as exception:
-            self.handle_exception("Error processing prolog rules.", exception)
+        except Exception as e:
+            self.handle_exception("Error processing prolog rules.", str(e))
             return
 
         # Attempt to find the solutions and handle any exceptions gracefully
         try:
             solutions = solver.find_solutions(query_text)
-        except Exception as exception:
-            self.handle_exception("Error processing prolog query.", exception)
+        except Exception as e:
+            self.handle_exception("Error processing prolog query.", str(e))
             return
 
         # If our query returns a boolean, we simply display a 'Yes' or a 'No'
@@ -183,17 +195,6 @@ class Editor(object):
         self.solutions_display.insert(END, str(exception) + "\n")
         self.set_not_busy()
 
-    def is_file_path_selected(self, file_path):
-        return file_path != None and file_path != ""
-
-    def get_file_contents(self, file_path):
-        """Return a string containing the file contents of the file located at the
-        specified file path """
-        with open(file_path, encoding="utf-8") as f:
-            file_contents = f.read()
-
-        return file_contents
-
     def set_rule_editor_text(self, text):
         self.rule_editor.delete(1.0, "end")
         self.rule_editor.insert(1.0, text)
@@ -202,11 +203,11 @@ class Editor(object):
     def open_file(self, file_path=None):
 
         # Open a a new file dialog which allows the user to select a file to open
-        if file_path == None:
+        if file_path is None:
             file_path = filedialog.askopenfilename()
 
-        if self.is_file_path_selected(file_path):
-            file_contents = self.get_file_contents(file_path)
+        if is_file_path_selected(file_path):
+            file_contents = get_file_contents(file_path)
 
             # Set the rule editor text to contain the selected file contents
             self.set_rule_editor_text(file_contents)
@@ -215,7 +216,7 @@ class Editor(object):
     def save_file(self):
         """If we have specified a file path, save the file - otherwise, prompt the
         user to specify the file location prior to saving the file """
-        if self.file_path == None:
+        if self.file_path is None:
             result = self.save_file_as()
         else:
             result = self.save_file_as(file_path=self.file_path)
@@ -250,10 +251,10 @@ class Editor(object):
         except FileNotFoundError:
             return "cancelled"
 
-    def undo(self, event=None):
+    def undo(self):
         self.rule_editor.edit_undo()
 
-    def redo(self, event=None):
+    def redo(self):
         self.rule_editor.edit_redo()
 
 

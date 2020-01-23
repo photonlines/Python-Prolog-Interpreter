@@ -59,6 +59,6 @@ class Solver(object):
                 return True if not variables_in_query else None
         else:
             # If we have no variables in our query, it means our goal had no matches,
-            # so we return False. Otherwisewe simply return None to show no variable
+            # so we return False. Otherwise simply return None to show no variable
             # bindings were found.
             return False if not variables_in_query else None
