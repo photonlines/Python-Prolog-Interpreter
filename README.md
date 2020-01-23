@@ -90,3 +90,12 @@ Food = oranges
 
 The above gives a very small sample of Prolog. I’ve included a few test cases which demo how to solve the [Zebra / Einstein puzzle](https://en.wikipedia.org/wiki/Zebra_Puzzle) using the interpreter, and you can play around and create your own rules / programs using the editor. The original language includes a lot more functionality, so I urge you to explore further. 
 
+
+
+
+# Tkinter installation when using pyenv
+
+<https://stackoverflow.com/questions/22550068/python-not-configured-for-tk/31299142>
+https://github.com/pyenv/pyenv/issues/1375#issuecomment-524280004
+
+

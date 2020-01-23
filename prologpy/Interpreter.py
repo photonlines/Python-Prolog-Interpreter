@@ -9,7 +9,9 @@ class Term(object):
     called a functor and mark and michael are arguments.
     """
 
-    def __init__(self, functor, arguments=[]):
+    def __init__(self, functor, arguments=None):
+        if not arguments:
+            arguments = []
         self.functor = functor
         self.arguments = arguments
 
@@ -89,7 +91,10 @@ class TRUE(Term):
     """A predefined term used to represent facts as rules. i.e. functor(argument1,
     argument2) for example gets translated to functor(argument1, argument2) :- TRUE """
 
-    def __init__(self, functor="TRUE", arguments=[]):
+    # TODO should take no arguments?
+    def __init__(self, functor="TRUE", arguments=None):
+        if not arguments:
+            arguments = []
         super().__init__(functor, arguments)
 
     def substitute_variable_bindings(self, variable_bindings):
@@ -163,14 +168,13 @@ class Conjunction(Term):
     Teacher, Course), studies( # Student, Course). """
 
     def __init__(self, arguments):
-        self.functor = ""
-        self.arguments = arguments
+        super().__init__("", arguments)
 
     def query(self, database):
         """Return a generator that iterates over all of the conjunction terms which
         match the database rules. """
 
-        def find_solutions(self, database, argument_index, variable_bindings):
+        def find_solutions(argument_index, variable_bindings):
             """Return a generator which iterates over all of the database solutions
             matching our rules """
 
@@ -199,16 +203,13 @@ class Conjunction(Term):
 
                     if combined_variable_bindings is not None:
                         yield from find_solutions(
-                            self,
-                            database,
-                            argument_index + 1,
-                            combined_variable_bindings,
+                            argument_index + 1, combined_variable_bindings
                         )
 
         # Find all of the conjunction solutions matching our database rules. As a
         # note, the yield from expression is a form of generator delegation used to
         # recursively process all of the items matching our rules.
-        yield from find_solutions(self, database, 0, {})
+        yield from find_solutions(0, {})
 
     def substitute_variable_bindings(self, variable_bindings):
         """ Take the variable bindings map and return a conjunction with all
@@ -270,7 +271,7 @@ class Database(object):
 
                     # Fetch the map containing our variable bindings matching the
                     # tail of our rule.
-                    matching_tail_var_bindings = matched_tail_item.match_variable_bindings(
+                    matcng_tail_var_bndngs = matched_tail_item.match_variable_bindings(
                         matching_item
                     )
 
@@ -278,7 +279,7 @@ class Database(object):
                     # variable bindings replaced with the bindings found by querying
                     # our tail.
                     yield matched_head_item.substitute_variable_bindings(
-                        matching_tail_var_bindings
+                        matcng_tail_var_bndngs
                     )
 
     @staticmethod
@@ -313,8 +314,8 @@ class Database(object):
 
                 # If we have shared bindings, we add them to our existing map
                 if shared_bindings is not None:
-                    for variable, value in shared_bindings.items():
-                        merged_bindings[variable] = value
+                    for variable_, value_ in shared_bindings.items():
+                        merged_bindings[variable_] = value_
 
                 # If the shared bindings don't match, we have a conflict and we
                 # return None

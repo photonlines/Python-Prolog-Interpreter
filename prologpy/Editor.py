@@ -4,9 +4,10 @@ from prologpy.Solver import Solver
 
 
 class Editor(object):
-    def __init__(self, root):
 
-        self.root = root
+    def __init__(self, root_):
+
+        self.root = root_
         self.file_path = None
         self.root.title("Prolog Interpreter")
 
@@ -82,15 +83,15 @@ class Editor(object):
         )
 
         # Finally, let's create the file menu
-        self.create_file_menu()
+        self.menu_bar = self.create_file_menu()
 
     def create_file_menu(self):
         """Create a menu which will allow us to open / save our Prolog rules, run our
         query, and exit our editor interface """
 
-        self.menu_bar = Menu(root)
+        menu_bar = Menu(root)
 
-        file_menu = Menu(self.menu_bar, tearoff=0)
+        file_menu = Menu(menu_bar, tearoff=0)
 
         file_menu.add_command(
             label="Open...", underline=1, command=self.open_file
@@ -109,9 +110,10 @@ class Editor(object):
             label="Exit", underline=2, command=self.root.destroy
         )
 
-        self.menu_bar.add_cascade(label="File", underline=0, menu=file_menu)
+        menu_bar.add_cascade(label="File", underline=0, menu=file_menu)
 
-        self.root.config(menu=self.menu_bar)
+        self.root.config(menu=menu_bar)
+        return menu_bar
 
     def set_busy(self):
         # Show a busy cursor and update the UI
@@ -228,7 +230,7 @@ class Editor(object):
     def save_file_as(self, file_path=None):
         # If there is no file path specified, prompt the user with a dialog which
         # allows him/her to select where they want to save the file
-        if file_path == None:
+        if file_path is None:
             file_path = filedialog.asksaveasfilename(
                 filetypes=(
                     ("Text files", "*.txt"),
