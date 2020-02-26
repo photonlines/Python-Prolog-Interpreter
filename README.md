@@ -1,4 +1,4 @@
-### Description
+# prologpy
 
 This is a mini-Prolog Interpreter written in a few lines of Python 3. It runs a limited subset of Prolog and uses backtracking and generators in order to perform its magic.  The inspiration for creating this, with full info and detailed writeup on implementation, can be found through [this link](https://curiosity-driven.org/prolog-interpreter).
 
@@ -6,7 +6,39 @@ In addition to the interpreter, there’s also an interface for testing the func
 
 ![](images/Prolog-Editor-Snip.PNG?raw=true)
 
-### Prolog
+### Software compatibility
+
+Requires:
+- python3
+- tkinter (only for the GUI)
+- pytest (only for testing)
+
+### Installation
+Check it out:
+```bash
+$ git clone https://github.com/photonlines/Python-Prolog-Interpreter.git
+```
+
+### Try it out
+Fire up the GUI:
+```bash
+$ cd Python-Prolog-Interpreter
+$ python3 editor.py
+```
+Run the tests:
+```bash
+% python -m pytest
+========================= test session starts =========================
+platform darwin -- Python 3.8.1, pytest-5.3.4, py-1.8.1, pluggy-0.13.1
+rootdir: /Users/walton/ccode/prologpy
+collected 10 items
+
+tests/test_prologpy.py ..........                              [100%]
+
+========================= 10 passed in 3.96s ==========================
+```
+
+## Prolog
 
 Prolog stands for ‘Programming in Logic’. It’s a declarative programming language. This means that the programmer specifies a goal to be achieved, and Prolog works out how to achieve it. 
 
@@ -89,4 +121,6 @@ Food = oranges
 ```
 
 The above gives a very small sample of Prolog. I’ve included a few test cases which demo how to solve the [Zebra / Einstein puzzle](https://en.wikipedia.org/wiki/Zebra_Puzzle) using the interpreter, and you can play around and create your own rules / programs using the editor. The original language includes a lot more functionality, so I urge you to explore further. 
+
+
 
