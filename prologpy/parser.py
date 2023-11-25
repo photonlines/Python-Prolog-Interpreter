@@ -44,6 +44,9 @@ class Parser(object):
     NOTE: Instance can only be used once!
     """
 
+    # For Error Message
+    history = [""]*1000
+
     def __init__(self, input_text):
         self._tokens = parse_tokens_from_string(input_text)
         self._scope = None
@@ -64,12 +67,16 @@ class Parser(object):
         return self._tokens[0]
 
     def _pop_current(self):
-        return self._tokens.pop(0)
+        result = self._tokens.pop(0)
+        # Add a token/atom on history
+        self.history.append(result)
+        self.history.pop(0)
+        return result
 
     def _parse_atom(self):
         name = self._pop_current()
         if re.match(ATOM_NAME_REGEX, name) is None:
-            raise Exception("Invalid Atom Name: " + str(name))
+            raise Exception("Invalid Atom Name: " + str(name) + "\n" + "".join(self.history))
         return name
 
     def _parse_term(self):
@@ -115,7 +122,7 @@ class Parser(object):
             arguments.append(self._parse_term())
             if self._current not in (",", ")"):
                 raise Exception(
-                    "Expected , or ) in term but got " + str(self._current)
+                    "Expected , or ) in term but got " + str(self._current)  + "\n" + "".join(self.history)
                 )
             if self._current == ",":
                 self._pop_current()
@@ -133,7 +140,7 @@ class Parser(object):
 
         if self._current != ":-":
             raise Exception(
-                "Expected :- in rule but got " + str(self._current)
+                "Expected :- in rule but got " + str(self._current) + "\n" + "".join(self.history)
             )
 
         self._pop_current()
@@ -146,7 +153,7 @@ class Parser(object):
 
             if self._current not in (",", "."):
                 raise Exception(
-                    "Expected , or . in term but got " + str(self._current)
+                    "Expected , or . in term but got " + str(self._current)  + "\n" + "".join(self.history)
                 )
 
             if self._current == ",":
