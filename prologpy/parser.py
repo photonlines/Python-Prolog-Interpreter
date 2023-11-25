@@ -1,9 +1,8 @@
 import re
 from prologpy.interpreter import Conjunction, Variable, Term, TRUE, Rule
 
-
-TOKEN_REGEX = r"[A-Za-z0-9_]+|:\-|[()\.,]"
-ATOM_NAME_REGEX = r"^[A-Za-z0-9_]+$"
+TOKEN_REGEX = r"[A-Za-z0-9_\-\u3001-\u309F\u30A0-\u30FF\u4E00-\u9FAF]+|:\-|[()\.,]"
+ATOM_NAME_REGEX = r"^[A-Za-z0-9_\-\u3001-\u309F\u30A0-\u30FF\u4E00-\u9FAF]+$"
 VARIABLE_REGEX = r"^[A-Z_][A-Za-z0-9_]*$"
 
 # Regex to parse comment strings. The first group captures quoted strings (
